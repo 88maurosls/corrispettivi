@@ -2,9 +2,9 @@ import streamlit as st
 import pandas as pd
 from io import BytesIO
 
-# Funzione per creare il file Excel
+# Funzione per creare il file Excel con formule
 def create_excel(data_corrispettivi, data_cassa):
-    # Crea un DataFrame per ogni foglio
+    # Crea un DataFrame per il foglio "Corrispettivi"
     df_corrispettivi = pd.DataFrame({
         '': [
             "data", "Nr azzeramento fiscale", "", 
@@ -24,24 +24,28 @@ def create_excel(data_corrispettivi, data_cassa):
             data_corrispettivi['incasso_pos_corner'], 
             None, data_corrispettivi['incassi_contanti'], 
             data_corrispettivi['pay_by_link'], 
-            data_corrispettivi['corrispettivi_giorno'], 
+            "=B10",  # Formula Corrispettivi giorno incassati
             None, None, data_corrispettivi['incasso_fatture_pos'], 
             data_corrispettivi['incasso_fatture_contanti']
         ]
     })
 
+    # Crea un DataFrame per il foglio "Cassa"
     df_cassa = pd.DataFrame({
         'Descrizione': [
             "Saldo GIORNO PRECEDENTE", "", "Entrate", 
             "TOTALE incassi contanti", "", "", "", 
-            "Uscite (pagamenti vari)", "Fogli A4", "", "", "", 
+            "Uscite Extra", data_cassa['uscita1_descr'], data_cassa['uscita2_descr'], 
+            data_cassa['uscita3_descr'], "", "", 
             "Saldo CASSA GIORNATA ODIERNA"
         ],
         'Valore': [
             data_cassa['saldo_precedente'], None, None, 
-            data_cassa['totale_incassi'], None, None, None,
-            None, data_cassa['uscite_fogli_a4'], None, 
-            None, None, data_cassa['saldo_odierno']
+            "=Corrispettivi!B12+Corrispettivi!B18",  # Formula Totale Incassi Contanti
+            None, None, None, 
+            None, data_cassa['uscita1_valore'], data_cassa['uscita2_valore'], 
+            data_cassa['uscita3_valore'], None, None, 
+            "=C2 + SOMMA(C5:C8) - SOMMA(C10:C12)"  # Formula Saldo Cassa Giornata Odierna
         ]
     })
 
@@ -67,7 +71,6 @@ data_corrispettivi = {
     'incasso_pos_corner': st.number_input("Incasso POS Corner", 0.0),
     'incassi_contanti': st.number_input("Incassi Contanti", 0.0),
     'pay_by_link': st.number_input("Pay by Link", 0.0),
-    'corrispettivi_giorno': st.number_input("Corrispettivi Giorno Incassati", 0.0),
     'incasso_fatture_pos': st.number_input("Incasso Fatture POS", 0.0),
     'incasso_fatture_contanti': st.number_input("Incasso Fatture Contanti", 0.0)
 }
@@ -75,13 +78,15 @@ data_corrispettivi = {
 st.header("Inserisci i dati per il foglio Cassa")
 data_cassa = {
     'saldo_precedente': st.number_input("Saldo Giorno Precedente", 0.0),
-    'totale_incassi': st.number_input("Totale Incassi Contanti", 0.0),
-    'uscite_fogli_a4': st.number_input("Uscite Fogli A4", 0.0),
-    'saldo_odierno': st.number_input("Saldo Cassa Giornata Odierna", 0.0)
+    'uscita1_descr': st.text_input("Descrizione Uscita 1", "Fogli A4"),
+    'uscita1_valore': st.number_input("Importo Uscita 1", 0.0),
+    'uscita2_descr': st.text_input("Descrizione Uscita 2", ""),
+    'uscita2_valore': st.number_input("Importo Uscita 2", 0.0),
+    'uscita3_descr': st.text_input("Descrizione Uscita 3", ""),
+    'uscita3_valore': st.number_input("Importo Uscita 3", 0.0)
 }
 
 # Pulsante per scaricare il file Excel
 if st.button("Genera e Scarica il file Excel"):
     excel_data = create_excel(data_corrispettivi, data_cassa)
     st.download_button(label="Download Excel", data=excel_data, file_name="corrispettivi_cassa.xlsx")
-
