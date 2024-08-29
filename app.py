@@ -18,16 +18,22 @@ def create_excel(data_corrispettivi, data_cassa, negozio):
     
     # Lista per la colonna 'Valore' del foglio "Corrispettivi"
     valore_corrispettivi = [
-        None,  # Allineamento con la descrizione
+        None,  # Allineamento con la descrizione "Negozio"
         data_corrispettivi['data'], 
         data_corrispettivi['nr_azzeramento'], 
-        None, None, None, None,
+        None,  # Allineamento con "Scontrini annullati allegare"
+        None,  # Spazio vuoto corrispondente
+        None,  # Allineamento con "CORRISPETTIVI"
+        None,  # Spazio vuoto corrispondente
         data_corrispettivi['incassi_pos'], 
         data_corrispettivi['incasso_pos_corner'], 
-        None, data_corrispettivi['incassi_contanti'], 
+        None,  # Spazio vuoto corrispondente
+        data_corrispettivi['incassi_contanti'], 
         data_corrispettivi['pay_by_link'], 
-        "=SUM(B9:B13)",  # Formula per Corrispettivi giorno incassati
-        None, None, data_corrispettivi['incasso_fatture_pos'], 
+        "=SUM(B9:B13)",  # Formula per "Corrispettivi giorno incassati"
+        None,  # Spazio vuoto corrispondente
+        None,  # Allineamento con "FATTURE"
+        data_corrispettivi['incasso_fatture_pos'], 
         data_corrispettivi['incasso_fatture_contanti']
     ]
 
@@ -54,11 +60,11 @@ def create_excel(data_corrispettivi, data_cassa, negozio):
     # Lista per la colonna 'Valore' del foglio "Cassa"
     valore_cassa = [
         data_cassa['saldo_precedente'], None, None, 
-        "=Corrispettivi!B11 + Corrispettivi!B17",  # Formula aggiornata per Totale Incassi Contanti
+        "=Corrispettivi!B11 + Corrispettivi!B17",  # Formula aggiornata per "Totale incassi contanti"
         None, None, None, 
         None, data_cassa['uscita1_valore'], data_cassa['uscita2_valore'], 
         data_cassa['uscita3_valore'], None, None, None,
-        "=B1 + SUM(B4:B7) - SUM(B9:B11)"  # Formula aggiornata per Saldo Cassa Giornata Odierna
+        "=B1 + SUM(B4:B7) - SUM(B9:B11)"  # Formula aggiornata per "Saldo Cassa Giornata Odierna"
     ]
 
     # Verifica che le liste abbiano la stessa lunghezza
@@ -118,3 +124,4 @@ if st.button("Genera e Scarica il file Excel"):
     if excel_data is not None:
         file_name = f"{negozio}_{data_corrispettivi['data']}_corrispettivi_cassa.xlsx"
         st.download_button(label="Download Excel", data=excel_data, file_name=file_name)
+
