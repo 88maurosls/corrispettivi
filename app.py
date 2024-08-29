@@ -18,7 +18,7 @@ def create_excel(data_corrispettivi, data_cassa, negozio):
     
     # Lista per la colonna 'Valore' del foglio "Corrispettivi"
     valore_corrispettivi = [
-        None,  # Per allineare la lunghezza delle liste
+        None,  # Allineamento con la descrizione
         data_corrispettivi['data'], 
         data_corrispettivi['nr_azzeramento'], 
         None, None, None, None,
@@ -33,7 +33,8 @@ def create_excel(data_corrispettivi, data_cassa, negozio):
 
     # Verifica che le liste abbiano la stessa lunghezza
     if len(descrizione_corrispettivi) != len(valore_corrispettivi):
-        raise ValueError("Le liste 'descrizione_corrispettivi' e 'valore_corrispettivi' devono avere la stessa lunghezza.")
+        st.error(f"Errore: Lunghezza disallineata: {len(descrizione_corrispettivi)} descrizioni vs {len(valore_corrispettivi)} valori")
+        return None
 
     # Crea un DataFrame per il foglio "Corrispettivi"
     df_corrispettivi = pd.DataFrame({
@@ -62,7 +63,8 @@ def create_excel(data_corrispettivi, data_cassa, negozio):
 
     # Verifica che le liste abbiano la stessa lunghezza
     if len(descrizione_cassa) != len(valore_cassa):
-        raise ValueError("Le liste 'descrizione_cassa' e 'valore_cassa' devono avere la stessa lunghezza.")
+        st.error(f"Errore: Lunghezza disallineata: {len(descrizione_cassa)} descrizioni vs {len(valore_cassa)} valori")
+        return None
 
     # Crea un DataFrame per il foglio "Cassa"
     df_cassa = pd.DataFrame({
@@ -113,5 +115,6 @@ data_cassa = {
 # Pulsante per scaricare il file Excel
 if st.button("Genera e Scarica il file Excel"):
     excel_data = create_excel(data_corrispettivi, data_cassa, negozio)
-    file_name = f"{negozio}_{data_corrispettivi['data']}_corrispettivi_cassa.xlsx"
-    st.download_button(label="Download Excel", data=excel_data, file_name=file_name)
+    if excel_data is not None:
+        file_name = f"{negozio}_{data_corrispettivi['data']}_corrispettivi_cassa.xlsx"
+        st.download_button(label="Download Excel", data=excel_data, file_name=file_name)
