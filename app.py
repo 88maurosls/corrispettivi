@@ -45,7 +45,7 @@ def create_excel(data_corrispettivi, data_cassa):
             None, None, None, 
             None, data_cassa['uscita1_valore'], data_cassa['uscita2_valore'], 
             data_cassa['uscita3_valore'], None, None, None,
-            "=B1 + SOMMA(B4:B7) - SOMMA(B9:B11)"  # Formula per Saldo Cassa Giornata Odierna
+            "=B1 + SUM(B4:B7) - SUM(B9:B11)"  # Formula aggiornata per Saldo Cassa Giornata Odierna
         ]
     })
 
