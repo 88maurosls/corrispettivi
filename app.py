@@ -4,50 +4,70 @@ from io import BytesIO
 
 # Funzione per creare il file Excel con formule
 def create_excel(data_corrispettivi, data_cassa, negozio):
+    # Lista per la colonna 'Descrizione'
+    descrizione_corrispettivi = [
+        f"Negozio {negozio}", "data", "Nr azzeramento fiscale", "", 
+        "Scontrini annullati allegare", "", 
+        "CORRISPETTIVI", "", 
+        "Incassi POS", "Incasso POS Corner", "", 
+        "Incassi contanti", "Pay by Link", 
+        "Corrispettivi giorno incassati", "", 
+        "FATTURE", "Incasso FATTURE POS", 
+        "incasso FATTURE CONTANTI"
+    ]
+    
+    # Lista per la colonna 'Valore'
+    valore_corrispettivi = [
+        None,  # Per allineare la lunghezza delle liste
+        data_corrispettivi['data'], 
+        data_corrispettivi['nr_azzeramento'], 
+        None, None, None, None,
+        data_corrispettivi['incassi_pos'], 
+        data_corrispettivi['incasso_pos_corner'], 
+        None, data_corrispettivi['incassi_contanti'], 
+        data_corrispettivi['pay_by_link'], 
+        "=SUM(B9:B13)",  # Formula per Corrispettivi giorno incassati
+        None, None, data_corrispettivi['incasso_fatture_pos'], 
+        data_corrispettivi['incasso_fatture_contanti']
+    ]
+
+    # Assicurarsi che entrambe le liste abbiano la stessa lunghezza
+    if len(descrizione_corrispettivi) != len(valore_corrispettivi):
+        raise ValueError("Le liste 'descrizione_corrispettivi' e 'valore_corrispettivi' devono avere la stessa lunghezza.")
+
     # Crea un DataFrame per il foglio "Corrispettivi"
     df_corrispettivi = pd.DataFrame({
-        '': [
-            f"Negozio {negozio}", "data", "Nr azzeramento fiscale", "", 
-            "Scontrini annullati allegare", "", 
-            "CORRISPETTIVI", "", 
-            "Incassi POS", "Incasso POS Corner", "", 
-            "Incassi contanti", "Pay by Link", 
-            "Corrispettivi giorno incassati", "", 
-            "FATTURE", "Incasso FATTURE POS", 
-            "incasso FATTURE CONTANTI"
-        ],
-        'Valore': [
-            None,  # Per allineare la lunghezza delle liste
-            data_corrispettivi['data'], 
-            data_corrispettivi['nr_azzeramento'], 
-            None, None, None, None,
-            data_corrispettivi['incassi_pos'], 
-            data_corrispettivi['incasso_pos_corner'], 
-            None, data_corrispettivi['incassi_contanti'], 
-            data_corrispettivi['pay_by_link'], 
-            "=SUM(B9:B13)",  # Formula per Corrispettivi giorno incassati
-            None, None, data_corrispettivi['incasso_fatture_pos'], 
-            data_corrispettivi['incasso_fatture_contanti']
-        ]
+        'Descrizione': descrizione_corrispettivi,
+        'Valore': valore_corrispettivi
     })
+
+    # Lista per la colonna 'Descrizione' del foglio "Cassa"
+    descrizione_cassa = [
+        "Saldo GIORNO PRECEDENTE", "", "Entrate", 
+        "TOTALE incassi contanti", "", "", "", 
+        "Uscite Extra", data_cassa['uscita1_descr'], data_cassa['uscita2_descr'], 
+        data_cassa['uscita3_descr'], "", "", "", 
+        "Saldo CASSA GIORNATA ODIERNA"
+    ]
+
+    # Lista per la colonna 'Valore' del foglio "Cassa"
+    valore_cassa = [
+        data_cassa['saldo_precedente'], None, None, 
+        "=Corrispettivi!B11 + Corrispettivi!B17",  # Formula aggiornata per Totale Incassi Contanti
+        None, None, None, 
+        None, data_cassa['uscita1_valore'], data_cassa['uscita2_valore'], 
+        data_cassa['uscita3_valore'], None, None, None,
+        "=B1 + SUM(B4:B7) - SUM(B9:B11)"  # Formula aggiornata per Saldo Cassa Giornata Odierna
+    ]
+
+    # Assicurarsi che entrambe le liste abbiano la stessa lunghezza
+    if len(descrizione_cassa) != len(valore_cassa):
+        raise ValueError("Le liste 'descrizione_cassa' e 'valore_cassa' devono avere la stessa lunghezza.")
 
     # Crea un DataFrame per il foglio "Cassa"
     df_cassa = pd.DataFrame({
-        'Descrizione': [
-            "Saldo GIORNO PRECEDENTE", "", "Entrate", 
-            "TOTALE incassi contanti", "", "", "", 
-            "Uscite Extra", data_cassa['uscita1_descr'], data_cassa['uscita2_descr'], 
-            data_cassa['uscita3_descr'], "", "", "", 
-            "Saldo CASSA GIORNATA ODIERNA"
-        ],
-        'Valore': [
-            data_cassa['saldo_precedente'], None, None, 
-            "=Corrispettivi!B11 + Corrispettivi!B17",  # Formula aggiornata per Totale Incassi Contanti
-            None, None, None, 
-            None, data_cassa['uscita1_valore'], data_cassa['uscita2_valore'], 
-            data_cassa['uscita3_valore'], None, None, None,
-            "=B1 + SUM(B4:B7) - SUM(B9:B11)"  # Formula aggiornata per Saldo Cassa Giornata Odierna
-        ]
+        'Descrizione': descrizione_cassa,
+        'Valore': valore_cassa
     })
 
     # Scrittura in Excel
