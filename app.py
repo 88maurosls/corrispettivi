@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 from io import BytesIO
-from datetime import datetime
+import os
 
 # Funzione per creare il file Excel con formule
 def create_excel(data_corrispettivi, data_cassa):
@@ -72,6 +72,7 @@ def save_saldo_to_txt(localita, saldo, data):
     else:
         return
     
+    # Apre o crea il file e aggiunge il nuovo saldo con la data
     with open(file_name, 'a') as file:
         file.write(f"{data}: {saldo}\n")
 
