@@ -3,11 +3,11 @@ import pandas as pd
 from io import BytesIO
 
 # Funzione per creare il file Excel con formule
-def create_excel(data_corrispettivi, data_cassa):
+def create_excel(data_corrispettivi, data_cassa, negozio):
     # Crea un DataFrame per il foglio "Corrispettivi"
     df_corrispettivi = pd.DataFrame({
         '': [
-            "data", "Nr azzeramento fiscale", "", 
+            f"Negozio {negozio}", "data", "Nr azzeramento fiscale", "", 
             "Scontrini annullati allegare", "", 
             "CORRISPETTIVI", "", 
             "Incassi POS", "Incasso POS Corner", "", 
@@ -17,14 +17,14 @@ def create_excel(data_corrispettivi, data_cassa):
             "incasso FATTURE CONTANTI"
         ],
         'Valore': [
-            data_corrispettivi['data'], 
+            None, data_corrispettivi['data'], 
             data_corrispettivi['nr_azzeramento'], 
-            None, None, None, None, None,
+            None, None, None, None,
             data_corrispettivi['incassi_pos'], 
             data_corrispettivi['incasso_pos_corner'], 
             None, data_corrispettivi['incassi_contanti'], 
             data_corrispettivi['pay_by_link'], 
-            "=SUM(B8:B12)",  # Formula per Corrispettivi giorno incassati
+            "=SUM(B9:B13)",  # Formula per Corrispettivi giorno incassati
             None, None, data_corrispettivi['incasso_fatture_pos'], 
             data_corrispettivi['incasso_fatture_contanti']
         ]
@@ -41,7 +41,7 @@ def create_excel(data_corrispettivi, data_cassa):
         ],
         'Valore': [
             data_cassa['saldo_precedente'], None, None, 
-            "=Corrispettivi!B11 + Corrispettivi!B17",  # Formula aggiornata per Totale Incassi Contanti
+            "=Corrispettivi!B12 + Corrispettivi!B18",  # Formula aggiornata per Totale Incassi Contanti
             None, None, None, 
             None, data_cassa['uscita1_valore'], data_cassa['uscita2_valore'], 
             data_cassa['uscita3_valore'], None, None, None,
@@ -62,6 +62,9 @@ def create_excel(data_corrispettivi, data_cassa):
 
 # Interfaccia Streamlit
 st.title("Generatore di Excel Corrispettivi Cassa")
+
+st.header("Seleziona il negozio")
+negozio = st.radio("Seleziona il negozio", ["Cagliari", "Porto Cervo", "Castel Maggiore"])
 
 st.header("Inserisci i dati per il foglio Corrispettivi")
 data_corrispettivi = {
@@ -88,5 +91,6 @@ data_cassa = {
 
 # Pulsante per scaricare il file Excel
 if st.button("Genera e Scarica il file Excel"):
-    excel_data = create_excel(data_corrispettivi, data_cassa)
-    st.download_button(label="Download Excel", data=excel_data, file_name="corrispettivi_cassa.xlsx")
+    excel_data = create_excel(data_corrispettivi, data_cassa, negozio)
+    file_name = f"{negozio}_{data_corrispettivi['data']}_corrispettivi_cassa.xlsx"
+    st.download_button(label="Download Excel", data=excel_data, file_name=file_name)
