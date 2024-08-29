@@ -41,11 +41,11 @@ def create_excel(data_corrispettivi, data_cassa):
         ],
         'Valore': [
             data_cassa['saldo_precedente'], None, None, 
-            "=Corrispettivi!B12+Corrispettivi!B18",  # Formula Totale Incassi Contanti
+            "=Corrispettivi!B12+Corrispettivi!B18",  # Formula aggiornata per Totale Incassi Contanti
             None, None, None, 
             None, data_cassa['uscita1_valore'], data_cassa['uscita2_valore'], 
             data_cassa['uscita3_valore'], None, None, None,
-            "=C2 + SOMMA(C5:C8) - SOMMA(C10:C12)"  # Formula Saldo Cassa Giornata Odierna
+            "=B1 + SOMMA(B4:B7) - SOMMA(B9:B11)"  # Formula corretta per Saldo Cassa Giornata Odierna
         ]
     })
 
