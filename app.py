@@ -36,7 +36,7 @@ def create_excel(data_corrispettivi, data_cassa):
             "Saldo GIORNO PRECEDENTE", "", "Entrate", 
             "TOTALE incassi contanti", "", "", "", 
             "Uscite Extra", data_cassa['uscita1_descr'], data_cassa['uscita2_descr'], 
-            data_cassa['uscita3_descr'], "", "", 
+            data_cassa['uscita3_descr'], "", "", "", 
             "Saldo CASSA GIORNATA ODIERNA"
         ],
         'Valore': [
@@ -56,7 +56,7 @@ def create_excel(data_corrispettivi, data_cassa):
     df_corrispettivi.to_excel(writer, sheet_name='Corrispettivi', index=False, header=False)
     df_cassa.to_excel(writer, sheet_name='Cassa', index=False, header=False)
     
-    writer.save()
+    writer.close()  # Usa close() invece di save()
     processed_data = output.getvalue()
     return processed_data
 
