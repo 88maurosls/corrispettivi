@@ -4,7 +4,7 @@ from io import BytesIO
 
 # Funzione per creare il file Excel con formule
 def create_excel(data_corrispettivi, data_cassa, negozio):
-    # Lista per la colonna 'Descrizione'
+    # Lista per la colonna 'Descrizione' del foglio "Corrispettivi"
     descrizione_corrispettivi = [
         f"Negozio {negozio}", "data", "Nr azzeramento fiscale", "", 
         "Scontrini annullati allegare", "", 
@@ -16,7 +16,7 @@ def create_excel(data_corrispettivi, data_cassa, negozio):
         "incasso FATTURE CONTANTI"
     ]
     
-    # Lista per la colonna 'Valore'
+    # Lista per la colonna 'Valore' del foglio "Corrispettivi"
     valore_corrispettivi = [
         None,  # Per allineare la lunghezza delle liste
         data_corrispettivi['data'], 
@@ -31,7 +31,7 @@ def create_excel(data_corrispettivi, data_cassa, negozio):
         data_corrispettivi['incasso_fatture_contanti']
     ]
 
-    # Assicurarsi che entrambe le liste abbiano la stessa lunghezza
+    # Verifica che le liste abbiano la stessa lunghezza
     if len(descrizione_corrispettivi) != len(valore_corrispettivi):
         raise ValueError("Le liste 'descrizione_corrispettivi' e 'valore_corrispettivi' devono avere la stessa lunghezza.")
 
@@ -60,7 +60,7 @@ def create_excel(data_corrispettivi, data_cassa, negozio):
         "=B1 + SUM(B4:B7) - SUM(B9:B11)"  # Formula aggiornata per Saldo Cassa Giornata Odierna
     ]
 
-    # Assicurarsi che entrambe le liste abbiano la stessa lunghezza
+    # Verifica che le liste abbiano la stessa lunghezza
     if len(descrizione_cassa) != len(valore_cassa):
         raise ValueError("Le liste 'descrizione_cassa' e 'valore_cassa' devono avere la stessa lunghezza.")
 
