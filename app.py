@@ -63,12 +63,15 @@ def create_excel(data_corrispettivi, data_cassa):
 
 # Funzione per salvare il saldo cassa nel file .txt corrispondente
 def save_saldo_to_txt(localita, saldo, data):
+    # Definizione dei percorsi assoluti
+    base_path = os.path.dirname(__file__)
+    
     if localita == "Cagliari":
-        file_name = "CG_saldo_precedente.txt"
+        file_name = os.path.join(base_path, "CG_saldo_precedente.txt")
     elif localita == "Porto Cervo":
-        file_name = "PC_saldo_precedente.txt"
+        file_name = os.path.join(base_path, "PC_saldo_precedente.txt")
     elif localita == "Castel Maggiore":
-        file_name = "CM_saldo_precedente.txt"
+        file_name = os.path.join(base_path, "CM_saldo_precedente.txt")
     else:
         return
     
