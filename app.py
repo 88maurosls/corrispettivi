@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 from io import BytesIO
+from datetime import datetime
 
 # Funzione per creare il file Excel con formule
 def create_excel(data_corrispettivi, data_cassa):
@@ -58,7 +59,21 @@ def create_excel(data_corrispettivi, data_cassa):
     
     writer.close()  # Usa close() invece di save()
     processed_data = output.getvalue()
-    return processed_data
+    return processed_data, df_cassa['Valore'].iloc[-1]  # Restituisce anche il valore del saldo cassa
+
+# Funzione per salvare il saldo cassa nel file .txt corrispondente
+def save_saldo_to_txt(localita, saldo, data):
+    if localita == "Cagliari":
+        file_name = "CG_saldo_precedente.txt"
+    elif localita == "Porto Cervo":
+        file_name = "PC_saldo_precedente.txt"
+    elif localita == "Castel Maggiore":
+        file_name = "CM_saldo_precedente.txt"
+    else:
+        return
+    
+    with open(file_name, 'a') as file:
+        file.write(f"{data}: {saldo}\n")
 
 # Interfaccia Streamlit
 st.title("Generatore di Excel Corrispettivi Cassa")
@@ -102,6 +117,9 @@ else:
 
     # Pulsante per scaricare il file Excel
     if st.button("Genera e Scarica il file Excel"):
-        excel_data = create_excel(data_corrispettivi, data_cassa)
+        excel_data, saldo_cassa_oggi = create_excel(data_corrispettivi, data_cassa)
         file_name = f"{localita}_{data_corrispettivi['data']}_corrispettivi_cassa.xlsx"
         st.download_button(label="Download Excel", data=excel_data, file_name=file_name)
+
+        # Salva il saldo cassa odierna nel file di testo corrispondente
+        save_saldo_to_txt(localita, saldo_cassa_oggi, data_corrispettivi['data'])
