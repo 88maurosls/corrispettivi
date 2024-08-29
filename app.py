@@ -44,7 +44,7 @@ def create_excel(data_corrispettivi, data_cassa):
             "=Corrispettivi!B12+Corrispettivi!B18",  # Formula Totale Incassi Contanti
             None, None, None, 
             None, data_cassa['uscita1_valore'], data_cassa['uscita2_valore'], 
-            data_cassa['uscita3_valore'], None, None, 
+            data_cassa['uscita3_valore'], None, None, None,
             "=C2 + SOMMA(C5:C8) - SOMMA(C10:C12)"  # Formula Saldo Cassa Giornata Odierna
         ]
     })
