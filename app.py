@@ -17,7 +17,8 @@ def create_excel(data_corrispettivi, data_cassa, negozio):
             "incasso FATTURE CONTANTI"
         ],
         'Valore': [
-            None, data_corrispettivi['data'], 
+            None,  # Per allineare la lunghezza delle liste
+            data_corrispettivi['data'], 
             data_corrispettivi['nr_azzeramento'], 
             None, None, None, None,
             data_corrispettivi['incassi_pos'], 
@@ -41,7 +42,7 @@ def create_excel(data_corrispettivi, data_cassa, negozio):
         ],
         'Valore': [
             data_cassa['saldo_precedente'], None, None, 
-            "=Corrispettivi!B12 + Corrispettivi!B18",  # Formula aggiornata per Totale Incassi Contanti
+            "=Corrispettivi!B11 + Corrispettivi!B17",  # Formula aggiornata per Totale Incassi Contanti
             None, None, None, 
             None, data_cassa['uscita1_valore'], data_cassa['uscita2_valore'], 
             data_cassa['uscita3_valore'], None, None, None,
