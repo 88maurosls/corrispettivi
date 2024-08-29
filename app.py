@@ -24,7 +24,7 @@ def create_excel(data_corrispettivi, data_cassa):
             data_corrispettivi['incasso_pos_corner'], 
             None, data_corrispettivi['incassi_contanti'], 
             data_corrispettivi['pay_by_link'], 
-            "=B10",  # Formula Corrispettivi giorno incassati
+            "=SUM(B8:B12)",  # Formula corretta per Corrispettivi giorno incassati
             None, None, data_corrispettivi['incasso_fatture_pos'], 
             data_corrispettivi['incasso_fatture_contanti']
         ]
